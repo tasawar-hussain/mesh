@@ -1,5 +1,5 @@
 """
-Constand used in application
+Constans used in application
 """
 
 import os
@@ -11,6 +11,8 @@ load_dotenv(verbose=True)
 TOTAL_CONTACTS = int(os.getenv("TOTAL_CONTACTS"))
 GROUP_COUNT = int(os.getenv("GROUP_COUNT"))
 IS_DEBUG = True if int(os.getenv("IS_DEBUG")) else False
+SG_SANDBOX_MODE = True if int(os.getenv("SG_SANDBOX_MODE")) else False
+
 CURL_FILE_PATH = os.getenv("CURL_FILE_PATH")
 
 GOOGLE_KEY_PATH = os.getenv("GOOGLE_KEY_PATH")

@@ -12,9 +12,9 @@ from pathlib import Path
 import requests
 import uncurl
 from faker import Faker
+from gspread.exceptions import APIError
 
 from google_sheet_service import GoogleSheetService
-from gspread.exceptions import APIError
 from sendgrid_service import SendgridService
 from settings import (CURL_FILE_PATH, GROUP_COUNT, IS_DEBUG,
                       TEST_WORKSHEET_TITLE, TOTAL_CONTACTS, WORKSHEET_TITLE)
@@ -210,9 +210,8 @@ def send_invites(chunks_idxs, contacts):
         gp = [contacts[idx] for idx in chunk]
         group_data = form_group(gp)
         for contact in group_data:
-            # pass
             resp = sg_service.send_email(contact["members"], contact["email"])
-            if resp != -1 and resp.status_code >= 200:
+            if resp and resp.status_code >= 200 and resp.status_code < 300:
                 sent_emails.append(contact["email"])
         groups.append(gp)
     return (groups, sent_emails)
