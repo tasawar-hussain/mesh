@@ -1,6 +1,6 @@
 # Mesh
 
-<h2>Setup Instructions</h2>
+<h3>Setup Instructions</h3>
 <ol>
   <li>Git pull repo in a directory</li>
   <li>Go to directory “cd mesh”</li>
