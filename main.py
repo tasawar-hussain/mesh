@@ -21,7 +21,8 @@ def main(_argv):
         return
 
     chunks_idxs = groupize(contacts_count)
-    groups, sent_email = send_invites(chunks_idxs, contacts)
+    groups_data = send_invites(chunks_idxs, contacts)
+    print("group data", groups_data)
 
 
 if __name__ == "__main__":

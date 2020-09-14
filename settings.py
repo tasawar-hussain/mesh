@@ -26,3 +26,5 @@ TEST_WORKSHEET_TITLE = os.getenv("TEST_WORKSHEET_TITLE")
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 TEMPLATE_ID = os.getenv("TEMPLATE_ID")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
+
+DEFAULT_HEADERS = ['Slack Name', 'Arbisoft Email']

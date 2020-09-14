@@ -1,8 +1,13 @@
 import datetime
+import sys
 
 import gspread
+from gspread.exceptions import APIError
 
+from my_logger import my_logger
 from settings import GOOGLE_KEY_PATH, SHEET_ID, WORKSHEET_ID, WORKSHEET_TITLE
+
+logger = my_logger(__name__)
 
 
 class GoogleSheetService:
@@ -36,20 +41,44 @@ class GoogleSheetService:
             worksheet = worksheet_list[0]
         return worksheet.id
 
-    def upload_contacts_to_sheet(self, contacts):
+    def upload_data(self, data, worksheet_name):
         worksheet = self.get_worksheet()
-        worksheet.update('A1:B1', [['Slack Name', 'Arbisoft Email']])
-        worksheet.format('A1:B1', {'textFormat': {'bold': True}})
-        count = len(contacts) + 1  # One more for headers
-        sheet_range = f"A2:B{count}"
-        worksheet.update(sheet_range, contacts)
+        if not worksheet_name:
+            logger.error(f"No sheet name given using {worksheet}")
+        else:
+            self.set_worksheet(worksheet_name)
 
-    def read_contacts_from_sheet(self):
-        return self.__worksheet.get_all_values()
+        worksheet = self.get_worksheet()
+        columns_count = len(data[0])
+        col_char = chr(ord('A') + columns_count - 1)
+        rows_count = len(data)
+        sheet_range = f"A1:{col_char}{rows_count}"
+        worksheet.update(sheet_range, data)
+        worksheet.format("A1:B1", {'textFormat': {'bold': True}})
 
-    def create_worksheet(self, title, rows=100, cols=10):
-        if not title:
-            title = str(datetime.datetime.now().timestamp())
-        return self.get_sheet().add_worksheet(title=title,
-                                              rows=rows,
-                                              cols=cols)
+    def read_data(self, worksheet_name=None):
+        worksheet = self.get_worksheet()
+        if not worksheet_name:
+            logger.error(f"No sheet name given using {worksheet}")
+        else:
+            self.set_worksheet(worksheet_name)
+
+        worksheet = self.get_worksheet()
+        logger.info(f"reading data from {worksheet}")
+        data = self.get_worksheet().get_all_values()
+        logger.info(f"{len(data) -1} contacts imported from {worksheet}")
+        return data
+
+    def create_worksheet(self,
+                         title=str(datetime.datetime.now().timestamp()),
+                         rows=100,
+                         cols=10):
+        logger.info(f"creating worksheet with title: {title}")
+        try:
+            res = self.get_sheet().add_worksheet(title=title,
+                                                 rows=rows,
+                                                 cols=cols)
+            logger.info(f"Sheet created with title: {res.title}")
+            return res
+        except APIError as e:
+            logger.error(e)
