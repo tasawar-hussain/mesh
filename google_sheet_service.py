@@ -5,22 +5,26 @@ import gspread
 from gspread.exceptions import APIError
 
 from my_logger import my_logger
-from settings import GOOGLE_KEY_PATH, SHEET_ID, WORKSHEET_TITLE
+#from settings import GOOGLE_KEY_PATH, SHEET_ID, WORKSHEET_TITLE, MESH_CYCLE_WORKSHEET_TITLE
+from settings import GOOGLE_KEY_PATH, SHEET_ID, MESH_CYCLE_WORKSHEET_TITLE
 
 logger = my_logger(__name__)
 
 
+#TODO: need to refactor definitaion and setters and getters
 class GoogleSheetService:
     def __init__(self):
         gc = gspread.service_account(filename=GOOGLE_KEY_PATH)
         sheet = gc.open_by_key(SHEET_ID)
-        worksheet = sheet.worksheet(WORKSHEET_TITLE)
-        if not worksheet:
-            worksheet = sheet.get_worksheet(0)
+        #participants_worksheet = sheet.worksheet(WORKSHEET_TITLE)
+        #if not participants_worksheet:
+        #    participants_worksheet = sheet.get_worksheet(0)
+        cycle_worksheet = sheet.worksheet(MESH_CYCLE_WORKSHEET_TITLE)
         self.__sheet = sheet
-        self.__worksheet = worksheet
+        #self.__worksheet = participants_worksheet
+        self.__worksheet = cycle_worksheet
 
-    def get_worksheet_by_title(self, title=WORKSHEET_TITLE):
+    def get_worksheet_by_title(self, title=MESH_CYCLE_WORKSHEET_TITLE):
         return self.get_sheet().worksheet(title)
 
     def get_sheet(self):
@@ -32,7 +36,7 @@ class GoogleSheetService:
     def set_worksheet(self, title):
         self.__worksheet = self.get_worksheet_by_title(title)
 
-    def get_worksheet_id(self, title=WORKSHEET_TITLE):
+    def get_worksheet_id(self, title=MESH_CYCLE_WORKSHEET_TITLE):
         worksheet_list = self.get_sheet().worksheets()
         worksheet = [x for x in worksheet_list if x.title == title]
         if worksheet:
@@ -55,6 +59,13 @@ class GoogleSheetService:
         sheet_range = f"A1:{col_char}{rows_count}"
         worksheet.update(sheet_range, data)
         worksheet.format("A1:B1", {'textFormat': {'bold': True}})
+
+    def upload_cycle_data(self, data):
+        row_values = []
+        for x in data:
+            row_values.append(x[0])
+            row_values.append(x[1])
+        self.__worksheet.append_row(row_values)
 
     def read_data(self, worksheet_name=None):
         worksheet = self.get_worksheet()

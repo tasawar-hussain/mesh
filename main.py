@@ -22,7 +22,7 @@ def main(_argv):
         return
 
     group_indexes = create_random_groups(len(contacts))
-    #groups_data = send_invites(group_indexes, contacts)
+    groups_data = send_invites(group_indexes, contacts)
     # print("group data", groups_data)
 
 

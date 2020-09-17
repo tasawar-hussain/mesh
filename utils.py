@@ -18,8 +18,10 @@ from google_sheet_service import GoogleSheetService
 from my_logger import my_logger
 from gspread.exceptions import APIError
 from sendgrid_service import SendgridService
+# from settings import (CURL_COMMAND_FILE_PATH, DEFAULT_HEADERS, GROUP_COUNT, IS_DEBUG,
+#                       TEST_WORKSHEET_TITLE, TOTAL_CONTACTS, WORKSHEET_TITLE)
 from settings import (CURL_COMMAND_FILE_PATH, DEFAULT_HEADERS, GROUP_COUNT, IS_DEBUG,
-                      TEST_WORKSHEET_TITLE, TOTAL_CONTACTS, WORKSHEET_TITLE)
+                      MESH_CYCLE_WORKSHEET_TITLE, TOTAL_CONTACTS)
 
 logger = my_logger(__name__)
 fake = Faker()
@@ -100,7 +102,7 @@ def get_contacts():
     """
 
     if IS_DEBUG:
-        return create_test_contacts_data(4)
+        return create_test_contacts_data()
 
 
     slack_contacts_request_config = create_request_config()
@@ -130,6 +132,9 @@ def create_test_contacts_data(count=5):
     test_contacts = []
     for x in range(count):
         test_contacts.append(["user{}".format(x) , "user{}@yopmail.com".format(x)])
+
+    test_contacts.append(["Wjia" , "wajeeha.khalid@arbisoft.com"])
+    test_contacts.append(["Jia", "jia.khalid7@gmail.com"])
     return test_contacts
 
 
@@ -231,28 +236,70 @@ def form_group(group):
     return group_data
 
 
-def send_invites(chunks_idxs, contacts):
+# def upload_mesh_cycle_groups_on_google_sheet(groups):
+#     gss = GoogleSheetService()
+#     # print(len(groups[-1]))
+#     # last_group_contacts_count = len(groups[-1])
+#     # if last_group_contacts_count < GROUP_COUNT:
+#     #     for x in range(last_group_contacts_count, GROUP_COUNT):
+#     #         groups[-1].append(['',''])
+#     # secondlast_group_contacts_count = len(groups[-2])
+#     # if secondlast_group_contacts_count < GROUP_COUNT:
+#     #     for x in range(secondlast_group_contacts_count, GROUP_COUNT):
+#     #         groups[-2].append(['',''])
+#     # print(groups)
+#
+#     gss.upload_cycle_data(groups, MESH_CYCLE_WORKSHEET_TITLE)
+
+
+def create_email_template_data(mesh_group):
+    recipients_emails = []
+    recipients_names = []
+    for contact in mesh_group:
+        recipients_emails.append(contact[1])
+        recipients_names.append(contact[0])
+
+    return recipients_names, recipients_emails
+
+
+def send_invites(group_indexes, contacts):
     """
     Send email to particpants given the list of contacts and groups
     """
     sent_emails = []
     groups = []
     sg_service = SendgridService()
-    for chunk in chunks_idxs:
-        gp = [contacts[idx] for idx in chunk]
-        group_data = form_group(gp)
-        for contact in group_data:
-            print(f"\nsending email to: {contact['email']}")
-            resp = sg_service.send_email(contact["members"], contact["email"])
-            if resp and resp.status_code >= 200 and resp.status_code < 300:
-                for member in gp:
-                    if member[1] == contact['email']:
-                        member.append(True)
-                        break
-            else:
-                print(f"Error sending email to {contact['email']}")
+    gss = GoogleSheetService()
 
-        groups.append(gp)
+    print("Mesh cycle is {}".format(MESH_CYCLE_WORKSHEET_TITLE))
+    for group_index in group_indexes:
+        mesh_group = [contacts[idx] for idx in group_index]
+        print("Mesh Group")
+        print(mesh_group)
+
+        group_members_names, group_members_emails = create_email_template_data(mesh_group)
+        print("Sending Email to this Mesh group")
+        response = sg_service.send_email_to_group(group_members_names, group_members_emails)
+        print("email sent status is {}".format(response.status_code))
+
+        print("Uploading this mesh group on google sheet")
+        gss.upload_cycle_data(mesh_group)
+
+        #group_data = form_group(mesh_group)
+        # for contact in group_data:
+        #     print(f"\nsending email to: {contact['email']}")
+        #     resp = sg_service.send_email(contact["members"], contact["email"])
+        #     if resp and resp.status_code >= 200 and resp.status_code < 300:
+        #         for member in mesh_group:
+        #             if member[1] == contact['email']:
+        #                 member.append(True)
+        #                 break
+        #     else:
+        #         print(f"Error sending email to {contact['email']}")
+
+        groups.append(mesh_group)
+
+    #upload_mesh_cycle_groups_on_google_sheet(groups)
     return groups
 
 # def send_invites(chunks_idxs, contacts):
