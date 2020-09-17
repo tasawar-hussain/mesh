@@ -1,8 +1,6 @@
 """
 Constants used in application
 """
-from os import environ
-
 import os
 
 from dotenv import load_dotenv
@@ -19,10 +17,7 @@ CURL_COMMAND_FILE_PATH = os.getenv("CURL_FILE_PATH")
 GOOGLE_KEY_PATH = os.getenv("GOOGLE_KEY_PATH")
 
 SHEET_ID = os.getenv("SHEET_ID")
-#WORKSHEET_ID = os.getenv("WORKSHEET_ID")
-#WORKSHEET_TITLE = os.getenv("WORKSHEET_TITLE")
-#TEST_WORKSHEET_ID = os.getenv("TEST_WORKSHEET_ID")
-#TEST_WORKSHEET_TITLE = os.getenv("TEST_WORKSHEET_TITLE")
+
 MESH_CYCLE_WORKSHEET_TITLE = os.getenv("MESH_CYCLE_WORKSHEET_TITLE")
 MESH_CYCLE_WORKSHEET_ID = os.getenv("MESH_CYCLE_WORKSHEET_ID")
 
