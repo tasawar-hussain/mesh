@@ -1,4 +1,7 @@
 sendgrid.env
 .env
 service_account.json
-data.txt
+curl_command_for_slack_contacts.txt
+Pipfile.lock
+.idea/
+__pycache__/

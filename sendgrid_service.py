@@ -1,8 +1,11 @@
-import os
+import logging
+# import os
 
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import From, To, Mail, MailSettings, SandBoxMode
-from settings import FROM_EMAIL, IS_DEBUG, SENDGRID_API_KEY, TEMPLATE_ID
+from sendgrid.helpers.mail import From, Mail, MailSettings, SandBoxMode, To
+
+from settings import (FROM_EMAIL, IS_DEBUG, SENDGRID_API_KEY,
+         TEMPLATE_ID)
 
 
 class SendgridService:
@@ -22,5 +25,5 @@ class SendgridService:
                 response = self.sendgrid_client.send(message)
                 return response
             except Exception as e:
-                print(str(e))
-                return -1
+                logging.error(str(e))
+                return None

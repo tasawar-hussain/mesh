@@ -5,8 +5,8 @@ File with entry point to the application
 import logging
 import sys
 
-from settings import CURL_FILE_PATH
-from utils import get_contacts, groupize, send_invites
+from settings import CURL_COMMAND_FILE_PATH
+from utils import get_contacts, create_random_groups, send_invites
 
 
 def main(_argv):
@@ -14,14 +14,17 @@ def main(_argv):
     Driver function
     """
     contacts = get_contacts()
-    contacts_count = len(contacts)
+    print(contacts)
+    print(len(contacts))
 
-    if contacts_count < 1:
-        logging.error("no contacts found")
+    if not contacts:
+        logging.error("no contacts available")
         return
 
-    chunks_idxs = groupize(contacts_count)
-    groups, sent_email = send_invites(chunks_idxs, contacts)
+    group_indexes = create_random_groups(len(contacts))
+    #groups_data = send_invites(group_indexes, contacts)
+    # print("group data", groups_data)
+
 
 
 if __name__ == "__main__":
