@@ -26,9 +26,7 @@ class SendgridService:
         message.dynamic_template_data = {"group_members": ', '.join(
             [str(elem) for elem in group_member_names])}
 
-        print(message)
-        sandbox_mode = SandBoxMode(enable=SG_SANDBOX_MODE)
-        message.mail_settings = MailSettings(sandbox_mode=sandbox_mode)
+        message.mail_settings = MailSettings(sandbox_mode=SandBoxMode(enable=False))
         try:
             response = self.sendgrid_client.send(message)
             return response
