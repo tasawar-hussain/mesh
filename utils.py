@@ -4,6 +4,7 @@ Utility functions
 import json
 import logging
 import random
+from pathlib import Path
 
 import requests
 import uncurl
@@ -12,10 +13,26 @@ from faker import Faker
 from google_sheet_service import GoogleSheetService
 from my_logger import my_logger
 from sendgrid_service import SendgridService
-from settings import (CURL_COMMAND_FILE_PATH, GROUP_COUNT, IS_DEBUG, MESH_CYCLE_WORKSHEET_TITLE, TOTAL_CONTACTS)
+from settings import (CURL_COMMAND_FILE_PATH, GROUP_COUNT,
+                      IS_DEBUG, MESH_CYCLE_WORKSHEET_TITLE, TOTAL_CONTACTS)
 
 logger = my_logger(__name__)
 fake = Faker()
+
+
+def read_file(file_path=CURL_COMMAND_FILE_PATH):
+    """
+    Read's file from given path and removes line breaks
+    """
+    txt = ''
+    try:
+        txt = Path(file_path).read_text()
+    except FileNotFoundError:
+        print("Invalid file path")
+        return -1
+    txt = txt.replace('\\', '')
+    txt = txt.replace('\n', '')
+    return txt
 
 
 def parse_curl(curl_str):
@@ -79,7 +96,6 @@ def get_contacts():
     if IS_DEBUG:
         return create_test_contacts_data()
 
-
     slack_contacts_request_config = create_request_config()
     if not slack_contacts_request_config:
         return None
@@ -89,10 +105,11 @@ def get_contacts():
 
 def create_test_contacts_data(count=5):
     test_contacts = []
+    username = "mesh_user_"
     for x in range(count):
-        test_contacts.append(["user{}".format(x) , "user{}@yopmail.com".format(x)])
+        test_contacts.append([f"{username}{x}", f"{username}{x}@yopmail.com"])
 
-    test_contacts.append(["Wjia" , "wajeeha.khalid@arbisoft.com"])
+    test_contacts.append(["Wjia", "wajeeha.khalid@arbisoft.com"])
     test_contacts.append(["Jia", "jia.khalid7@gmail.com"])
     return test_contacts
 
@@ -142,7 +159,8 @@ def create_random_groups(total_contacts_count, group_count=GROUP_COUNT):
     random.shuffle(contact_indexes)
     group_indexes = list(chunks(contact_indexes, group_count))
     print(group_indexes)
-    group_indexes = optimize_groups(total_contacts_count, group_count, group_indexes)
+    group_indexes = optimize_groups(
+        total_contacts_count, group_count, group_indexes)
     print(group_indexes)
     return group_indexes
 
@@ -151,7 +169,7 @@ def create_email_template_data(mesh_group):
     recipients_emails = []
     recipients_names = []
     for contact in mesh_group:
-        recipients_emails.append(contact[1])
+        recipients_emails.append((contact[1], contact[0]))
         recipients_names.append(contact[0])
 
     return recipients_names, recipients_emails
@@ -172,9 +190,11 @@ def send_invites(group_indexes, contacts):
         print("Mesh Group")
         print(mesh_group)
 
-        group_members_names, group_members_emails = create_email_template_data(mesh_group)
+        group_members_names, group_members_emails = create_email_template_data(
+            mesh_group)
         print("Sending Email to this Mesh group")
-        response = sg_service.send_email_to_group(group_members_names, group_members_emails)
+        response = sg_service.send_email_to_group(
+            group_members_names, group_members_emails)
         print("email sent status is {}".format(response.status_code))
 
         print("Uploading this mesh group on google sheet")

@@ -10,7 +10,7 @@ load_dotenv(verbose=True)
 TOTAL_CONTACTS = int(os.getenv("TOTAL_CONTACTS"))
 GROUP_COUNT = int(os.getenv("GROUP_COUNT"))
 IS_DEBUG = True if int(os.getenv("IS_DEBUG")) else False
-SG_SANDBOX_MODE = True if int(os.getenv("IS_DEBUG")) else False
+SG_SANDBOX_MODE = True if int(os.getenv("SG_SANDBOX_MODE")) else False
 
 CURL_COMMAND_FILE_PATH = os.getenv("CURL_FILE_PATH")
 
