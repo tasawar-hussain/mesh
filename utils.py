@@ -152,16 +152,22 @@ def create_random_groups(total_contacts_count, group_count=GROUP_COUNT):
     returns array of arrays containing random groups
     """
     contact_indexes = list(range(total_contacts_count))
+    print("*** Random Contacts Indexes ***")
     print(contact_indexes)
+
     if total_contacts_count <= group_count:
         return contact_indexes
     # suffling indexes
     random.shuffle(contact_indexes)
     group_indexes = list(chunks(contact_indexes, group_count))
+    print("*** Random Group Indexes ***")
     print(group_indexes)
+
     group_indexes = optimize_groups(
         total_contacts_count, group_count, group_indexes)
+    print("*** Random Group Indexes with Adjustment***")
     print(group_indexes)
+
     return group_indexes
 
 
@@ -184,20 +190,19 @@ def send_invites(group_indexes, contacts):
     sg_service = SendgridService()
     gss = GoogleSheetService()
 
-    print("Mesh cycle is {}".format(MESH_CYCLE_WORKSHEET_TITLE))
+    print("*** Mesh cycle is {} ***".format(MESH_CYCLE_WORKSHEET_TITLE))
     for group_index in group_indexes:
         mesh_group = [contacts[idx] for idx in group_index]
-        print("Mesh Group")
+        print("*** Mesh Group ***")
         print(mesh_group)
 
         group_members_names, group_members_emails = create_email_template_data(
             mesh_group)
-        print("Sending Email to this Mesh group")
         response = sg_service.send_email_to_group(
             group_members_names, group_members_emails)
-        print("email sent status is {}".format(response.status_code))
+        print("*** email sent status is {} ***".format(response.status_code))
 
-        print("Uploading this mesh group on google sheet")
+        print("*** Uploading this mesh group on google sheet ***")
         gss.upload_cycle_data(mesh_group)
 
         groups.append(mesh_group)

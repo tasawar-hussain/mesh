@@ -3,7 +3,7 @@ import logging
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import From, Mail, MailSettings, SandBoxMode
 
-from settings import (FROM_EMAIL, SG_SANDBOX_MODE,
+from settings import (FROM_EMAIL,
                       SENDGRID_API_KEY, TEMPLATE_ID)
 
 
@@ -16,7 +16,7 @@ class SendgridService:
             logging.info("No email recipients")
             return None
 
-        print("to emails: ")
+        print("*** To emails: ***")
         print(group_member_emails)
         from_email = From(email=FROM_EMAIL, name="Mesh")
         to_emails = group_member_emails
