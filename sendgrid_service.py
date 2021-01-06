@@ -3,8 +3,7 @@ import logging
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import From, Mail, MailSettings, SandBoxMode
 
-from settings import (FROM_EMAIL,
-                      SENDGRID_API_KEY, TEMPLATE_ID)
+from settings import FROM_EMAIL, SENDGRID_API_KEY, TEMPLATE_ID
 
 
 class SendgridService:

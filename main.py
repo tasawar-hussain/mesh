@@ -5,7 +5,7 @@ File with entry point to the application
 import logging
 import sys
 
-from utils import get_contacts, create_random_groups, send_invites
+from utils import create_random_groups, get_contacts, send_invites
 
 
 def main(_argv):

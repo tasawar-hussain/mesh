@@ -1,17 +1,16 @@
 import datetime
-# import sys
 
 import gspread
 from gspread.exceptions import APIError
 
 from my_logger import my_logger
-from settings import GOOGLE_KEY_PATH, SHEET_ID, MESH_CYCLE_WORKSHEET_TITLE
+from settings import GOOGLE_KEY_PATH, MESH_CYCLE_WORKSHEET_TITLE, SHEET_ID
 
 logger = my_logger(__name__)
 
 
-#TODO: need to refactor definitions and setters and getters.
-#TODO: need to make class definitaions more generic and adaptable.
+# TODO: need to refactor definitions and setters and getters.
+# TODO: need to make class definitions more generic and adaptable.
 class GoogleSheetService:
     def __init__(self):
         gc = gspread.service_account(filename=GOOGLE_KEY_PATH)
