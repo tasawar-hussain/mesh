@@ -1,10 +1,11 @@
-import datetime
+from datetime import datetime
 
 import gspread
 from gspread.exceptions import APIError
 
 from my_logger import my_logger
-from settings import GOOGLE_KEY_PATH, MESH_CYCLE_WORKSHEET_TITLE, SHEET_ID
+from settings import (GOOGLE_KEY_PATH, MESH_CYCLE_WORKSHEET_TITLE,
+                      SHEET_DATE_FORMAT, SHEET_ID)
 
 logger = my_logger(__name__)
 
@@ -53,7 +54,7 @@ class GoogleSheetService:
         rows_count = len(data)
         sheet_range = f"A1:{col_char}{rows_count}"
         worksheet.update(sheet_range, data)
-        worksheet.format("A1:B1", {'textFormat': {'bold': True}})
+        # worksheet.format("A1:B1", {'textFormat': {'bold': True}})
 
     def upload_cycle_data(self, data):
         row_values = []
@@ -75,10 +76,8 @@ class GoogleSheetService:
         logger.info(f"{len(data) -1} contacts imported from {worksheet}")
         return data
 
-    def create_worksheet(self,
-                         title=str(datetime.datetime.now().timestamp()),
-                         rows=100,
-                         cols=10):
+    def create_worksheet(self, title=None, rows=100, cols=10):
+        title = title or datetime.now().strftime(SHEET_DATE_FORMAT)
         logger.info(f"creating worksheet with title: {title}")
         try:
             res = self.get_sheet().add_worksheet(title=title,

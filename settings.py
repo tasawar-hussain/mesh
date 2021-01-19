@@ -24,4 +24,9 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 TEMPLATE_ID = os.getenv("TEMPLATE_ID")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+SLACK_LETS_MEET_ID = os.getenv("SLACK_LETS_MEET_ID")
+SLACK_TEST_USERS = os.getenv("SLACK_TEST_USERS")
+
 DEFAULT_HEADERS = ['Slack Name', 'Arbisoft Email']
+SHEET_DATE_FORMAT = "%b%-d,%Y"

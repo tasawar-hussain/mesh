@@ -156,7 +156,8 @@ def create_random_groups(total_contacts_count, group_count=GROUP_COUNT):
     print(contact_indexes)
 
     if total_contacts_count <= group_count:
-        return contact_indexes
+        return [contact_indexes]
+
     # shuffling indexes
     random.shuffle(contact_indexes)
     group_indexes = list(chunks(contact_indexes, group_count))
@@ -169,6 +170,12 @@ def create_random_groups(total_contacts_count, group_count=GROUP_COUNT):
     print(group_indexes)
 
     return group_indexes
+
+
+def random_groups(contacts):
+    group_indexes = create_random_groups(len(contacts))
+    groups = [[contacts[idx] for idx in gi] for gi in group_indexes]
+    return groups
 
 
 def create_email_template_data(mesh_group):
@@ -185,7 +192,6 @@ def send_invites(group_indexes, contacts):
     """
     Send email to particpants given the list of contacts and groups
     """
-    sent_emails = []
     groups = []
     sg_service = SendgridService()
     gss = GoogleSheetService()
