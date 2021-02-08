@@ -74,6 +74,9 @@ class SlackBot:
             updated_group = []
             for user_id in group:
                 user = self.ss.user_info(user_id)
+                if not user:
+                    continue
+
                 updated_group.extend([user.slack_id, user.name, user.email])
             updated_data.append(updated_group)
         logger.info(f"*** Updating sheet with name and email ***")

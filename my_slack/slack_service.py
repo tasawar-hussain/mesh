@@ -80,5 +80,8 @@ class SlackService:
                 slack_id, name = user["id"], user["real_name"]
                 email = user["profile"]["email"]
                 return SlackUser(slack_id, name, email)
+            else:
+                logger.error(f"Error fetching user info: {response}")
+                return False
         except SlackApiError as e:
             logger.error(f"Error fetching user info: {e}")

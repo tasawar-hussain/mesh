@@ -26,11 +26,11 @@ def message_text(users):
     return f"""Are you ready to take a break?
 
     Hello {mentions},
-    This is your friendly Mesh 👋, visiting to help you connect with your teammates.
+    This is your friendly Mesh 👋, visiting to help you connect with your teammates. I have picked you from the #lets-meet slack channel to mesh.
 
-    # lets-meet slack channel to mesh. This is an opportunity for you to get to know each other if you don't already.
-    I have picked you from the
-    Initiate a conversation and pick a time to meet for a ☕, 🍔, or 🍦 (or via 💻 if you're in different locations).
+    This is an opportunity for you to get to know each other if you don't already.
+
+    Now that you're here, initiate a conversation and pick a time to meet for a ☕, 🍔, or 🍦 (or via 💻 if you're in different locations).
 
     Please follow SOPs to keep yourself & others safe if you decide to meet in person.
 
