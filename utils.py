@@ -13,8 +13,8 @@ from faker import Faker
 from google_sheet_service import GoogleSheetService
 from my_logger import my_logger
 from sendgrid_service import SendgridService
-from settings import (CURL_COMMAND_FILE_PATH, GROUP_COUNT,
-                      IS_DEBUG, MESH_CYCLE_WORKSHEET_TITLE, TOTAL_CONTACTS)
+from settings import (CURL_COMMAND_FILE_PATH, GROUP_COUNT, IS_DEBUG,
+                      MESH_CYCLE_WORKSHEET_TITLE, TOTAL_CONTACTS)
 
 logger = my_logger(__name__)
 fake = Faker()
@@ -39,13 +39,13 @@ def parse_curl(curl_str):
     """
     Given a curl string, parses it and return dictionary containing all request info
     """
-    prased_curl = {}
+    parsed_curl = {}
     if curl_str:
         try:
             context = uncurl.parse_context(curl_str)
         except:
             print("Invalid curl string")
-            return prased_curl
+            return parsed_curl
         cookies = dict(context.cookies)
         url = context.url
         headers = dict(context.headers)
@@ -55,10 +55,10 @@ def parse_curl(curl_str):
         headers['cookie'] = cookies_str
         data = json.loads(data)
         data['count'] = TOTAL_CONTACTS
-        prased_curl["url"] = url
-        prased_curl['headers'] = headers
-        prased_curl['data'] = data
-    return prased_curl
+        parsed_curl["url"] = url
+        parsed_curl['headers'] = headers
+        parsed_curl['data'] = data
+    return parsed_curl
 
 
 def get_slack_contacts(request_config):
@@ -156,8 +156,9 @@ def create_random_groups(total_contacts_count, group_count=GROUP_COUNT):
     print(contact_indexes)
 
     if total_contacts_count <= group_count:
-        return contact_indexes
-    # suffling indexes
+        return [contact_indexes]
+
+    # shuffling indexes
     random.shuffle(contact_indexes)
     group_indexes = list(chunks(contact_indexes, group_count))
     print("*** Random Group Indexes ***")
@@ -169,6 +170,12 @@ def create_random_groups(total_contacts_count, group_count=GROUP_COUNT):
     print(group_indexes)
 
     return group_indexes
+
+
+def random_groups(contacts):
+    group_indexes = create_random_groups(len(contacts))
+    groups = [[contacts[idx] for idx in gi] for gi in group_indexes]
+    return groups
 
 
 def create_email_template_data(mesh_group):
@@ -185,7 +192,6 @@ def send_invites(group_indexes, contacts):
     """
     Send email to particpants given the list of contacts and groups
     """
-    sent_emails = []
     groups = []
     sg_service = SendgridService()
     gss = GoogleSheetService()

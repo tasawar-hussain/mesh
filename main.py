@@ -2,29 +2,39 @@
 File with entry point to the application
 """
 
-import logging
 import sys
 
-from utils import get_contacts, create_random_groups, send_invites
+from my_logger import my_logger
+from my_slack.slack_bot import SlackBot
+
+logger = my_logger(__name__)
+
+
+# from utils import create_random_groups, get_contacts, send_invites
 
 
 def main(_argv):
     """
     Driver function
     """
-    contacts = get_contacts()
-    print("*** All Contacts ***")
-    print(contacts)
-    print(len(contacts))
+    logger.info("******** Main function ************")
+    sb = SlackBot()
+    sb.main()
+    logger.info("******** Done ************")
 
-    if not contacts:
-        logging.error("no contacts available")
-        return
+    # contacts = get_contacts()
+    # print("*** All Contacts ***")
+    # print(contacts)
+    # print(len(contacts))
 
-    group_indexes = create_random_groups(len(contacts))
+    # if not contacts:
+    #     logging.error("no contacts available")
+    #     return
 
-    # IMP: update MESH_CYCLE_WORKSHEET_TITLE in .env and uncomment line below and then run service.
-    send_invites(group_indexes, contacts)
+    # group_indexes = create_random_groups(len(contacts))
+
+    # # IMP: update MESH_CYCLE_WORKSHEET_TITLE in .env and uncomment line below and then run service.
+    # send_invites(group_indexes, contacts)
 
 
 if __name__ == "__main__":
